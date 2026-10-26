@@ -1,0 +1,23 @@
+my-portfolio/
+├── public/
+│   ├── images/               # Folder aset gambar statis (ditaruh manual)
+│   └── audio/                # Folder aset file MP3 lokal untuk music player
+├── src/
+│   ├── components/
+│   │   ├── Navbar.jsx        # Navigasi anchor (smooth scroll ke setiap section)
+│   │   ├── Hero.jsx          # Bagian intro / landing page utama
+│   │   ├── About.jsx         # Section: About Me
+│   │   ├── Skills.jsx        # Section: Skills / Kemampuan teknis
+│   │   ├── Projects.jsx      # Section: Projects / Portofolio karya
+│   │   ├── Certifications.jsx # Section: Certifications & Competitions
+│   │   ├── MusicPlayer.jsx   # Widget pemutar musik (mengambil sumber dari file MP3 lokal)
+│   │   └── Footer.jsx        # Footer & tautan media sosial
+│   ├── data/
+│   │   └── content.js        # File data statis (teks, daftar project, skills, certs, & playlist musik)
+│   ├── App.jsx               # Wadah utama yang merangkai seluruh section menjadi satu halaman
+│   ├── main.jsx              # Entry point aplikasi React
+│   └── index.css             # Pengaturan Global CSS & Tailwind configuration
+├── index.html                # HTML template utama
+├── package.json              # Daftar dependencies project
+├── tailwind.config.js        # Konfigurasi Tailwind CSS
+└── vite.config.js            # Konfigurasi Vite bundler

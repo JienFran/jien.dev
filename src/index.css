@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design tokens (plan.md §3). Semua warna dirujuk lewat token ini. */
+:root {
+  --color-bg: #050407;
+  --color-surface: #111019;
+  --color-surface-raised: #1b1725;
+  --color-indigo: #2a1a63; /* Persian Indigo — nilai sementara, boleh diganti */
+  --color-purple: #7847f5;
+  --color-purple-bright: #a45bff;
+  --color-lavender: #b8a0f0;
+  --color-lavender-pale: #e1d8ff;
+  --color-text: #f3f0fa;
+  --color-text-muted: #aaa3b8;
+  --color-border: #393044;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-bg text-text antialiased;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+
+  /* Fokus keyboard yang selalu terlihat (plan.md §9) */
+  :focus-visible {
+    outline: 2px solid var(--color-purple-bright);
+    outline-offset: 3px;
+  }
+
+  /* Hormati preferensi reduced-motion (plan.md §7) */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Placeholder visual dasar; styling lengkap menyusul di fase tampilan */
+  .panel {
+    @apply rounded border border-border bg-surface p-4;
+  }
+
+  .label {
+    @apply text-xs uppercase tracking-widest text-lavender-pale;
+  }
+
+  .section {
+    @apply mx-auto w-full max-w-5xl px-4 py-16 sm:px-6;
+    scroll-margin-top: 4rem;
+  }
+
+  .section-title {
+    @apply mb-6 text-2xl font-bold uppercase tracking-wide text-lavender;
+  }
+
+  .skip-link {
+    @apply absolute left-2 top-2 z-50 -translate-y-16 rounded bg-purple px-3 py-2 text-sm text-text focus:translate-y-0;
+  }
+}
