@@ -186,8 +186,7 @@ export const socialLinks = [
   { id: "linkedin", label: "LinkedIn", url: "https://www.linkedin.com/in/francent-jienarta", logo: "" },
   { id: "whatsapp", label: "WhatsApp", url: "https://wa.me/6281310790781", logo: "" },
   { id: "email", label: "Email", url: "mailto:francentjie@gmail.com", logo: "" },
-  { id: "music", label: "Music", url: "https://music.youtube.com/playlist?list=PL7J4zJm_mz5etbI7YihYIkWiabI5onOTA&si=OEJ9NmzLTIQmFMnC", logo: "" },
-  { id: "Download CV", label: "CV", url: "documents/CV FullStack - Francent Jienarta 2026.pdf", logo: "" },
+  { id: "music", label: "Music", url: "https://music.youtube.com/playlist?list=PL7J4zJm_mz5etbI7YihYIkWiabI5onOTA&si=OEJ9NmzLTIQmFMnC", logo: "" }
 ];
 
 // Daftar lagu pemutar musik. src relatif terhadap folder public/.

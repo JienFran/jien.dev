@@ -79,6 +79,7 @@ export default function MusicPlayer() {
           ref={audioRef}
           src={track.src}
           preload="auto"
+          volume={0.5}
           onPlay={() => setPlaying(true)}
           onPause={() => setPlaying(false)}
           onTimeUpdate={(e) => setTime(e.currentTarget.currentTime)}
