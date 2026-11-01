@@ -16,6 +16,8 @@ export default {
         text: "var(--color-text)",
         muted: "var(--color-text-muted)",
         border: "var(--color-border)",
+        periwinkle: "var(--color-periwinkle)",
+        icon: "var(--color-icon)",
       },
     },
   },

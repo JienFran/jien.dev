@@ -1,55 +1,35 @@
-import { profile, socialLinks } from "../data/content.js";
+import { profile } from "../data/content.js";
+import Collage from "./Collage.jsx";
 
+// Bagian pembuka: nama sebagai judul besar, peran, tombol, dan kolase foto.
 export default function Hero() {
-  return (
-    <section id="top" aria-labelledby="hero-title" className="section">
-      <div className="grid gap-8 md:grid-cols-2 md:items-center">
-        {/* Panel profil */}
-        <div className="panel">
-          <p className="label mb-3">Profile</p>
-          <h1 id="hero-title" className="text-4xl font-bold uppercase text-lavender">
-            {profile.name}
-          </h1>
-          <p className="mt-2 text-lavender-pale">{profile.role}</p>
-          <p className="mt-4 text-muted">{profile.intro}</p>
+  // Tiap kata nama tampil di barisnya sendiri
+  const words = profile.name.trim().split(/\s+/);
 
-          <div className="mt-6 flex flex-wrap gap-3">
-            <a
-              href="#projects"
-              className="rounded bg-purple px-4 py-2 text-sm font-semibold text-text hover:bg-purple-bright"
-            >
-              Lihat Projects
-            </a>
-            <a
-              href="#contact"
-              className="rounded border border-border px-4 py-2 text-sm hover:border-purple-bright"
-            >
-              Kontak
-            </a>
-            {socialLinks.map((link) => (
-              <a
-                key={link.url}
-                href={link.url}
-                className="rounded border border-border px-4 py-2 text-sm hover:border-purple-bright"
-              >
-                {link.label}
-              </a>
+  return (
+    <section id="top" className="hero" aria-labelledby="hero-title">
+      <div className="wrap hero__grid">
+        <div className="hero__text">
+          <h1 id="hero-title" className="hero__title">
+            {words.map((word, i) => (
+              <span key={`${word}-${i}`} className="hero__line">
+                <span style={{ "--i": i }}>{word}</span>
+              </span>
             ))}
+          </h1>
+          <p className="hero__role">{profile.role}</p>
+          <p className="hero__intro">{profile.intro}</p>
+          <div className="hero__cta">
+            <a className="btn btn--solid" href="#projects">
+              My Projects
+            </a>
+            <a className="btn btn--line" href="#contact">
+              Social Links
+            </a>
           </div>
         </div>
 
-        {/* Placeholder kolase / avatar — diganti pada fase tampilan */}
-        <div
-          role="img"
-          aria-label="Placeholder visual hero"
-          className="flex aspect-square w-full items-center justify-center border border-dashed border-border bg-surface-raised text-sm text-muted"
-        >
-          {profile.avatar ? (
-            <img src={profile.avatar} alt="" className="h-full w-full object-cover" />
-          ) : (
-            "PLACEHOLDER: kolase hero"
-          )}
-        </div>
+        <Collage />
       </div>
     </section>
   );

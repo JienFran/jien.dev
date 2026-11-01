@@ -1,23 +1,31 @@
 my-portfolio/
 ├── public/
-│   ├── images/               # Folder aset gambar statis (ditaruh manual)
-│   └── audio/                # Folder aset file MP3 lokal untuk music player
+│   ├── images/               # Foto/aset statis (ditaruh manual, lalu isi path di photos pada content.js)
+│   └── audio/                # File MP3 lokal untuk music player
 ├── src/
-│   ├── components/
-│   │   ├── Navbar.jsx        # Navigasi anchor (smooth scroll ke setiap section)
-│   │   ├── Hero.jsx          # Bagian intro / landing page utama
-│   │   ├── About.jsx         # Section: About Me
-│   │   ├── Skills.jsx        # Section: Skills / Kemampuan teknis
-│   │   ├── Projects.jsx      # Section: Projects / Portofolio karya
-│   │   ├── Certifications.jsx # Section: Certifications & Competitions
-│   │   ├── MusicPlayer.jsx   # Widget pemutar musik (mengambil sumber dari file MP3 lokal)
-│   │   └── Footer.jsx        # Footer & tautan media sosial
+│   ├── components/   (Nav, Hero, Collage, Swatch, About, Skills, Projects, Certifications, Contact, ...)
+│   │   ├── Background.jsx    # Latar blur (placeholder CSS; bisa diganti foto)
+│   │   ├── CrtOverlay.jsx    # Filter CRT: scanline, mask RGB, vignette, grain
+│   │   ├── Calendar.jsx      # Kalender bulanan yang berfungsi
+│   │   ├── AnalogClock.jsx   # Jam analog yang berjalan
+│   │   ├── Barcode.jsx       # Dekorasi barcode
+│   │   ├── Collage.jsx       # Kolase foto sisi kanan + jam
+│   │   ├── PhotoSlot.jsx     # Slot foto dengan placeholder
+│   │   ├── Section.jsx       # Pembungkus section (judul + isi)
+│   │   ├── About.jsx         # Section: about me
+│   │   ├── Certifications.jsx # Section: accomplishments
+│   │   ├── Skills.jsx        # Section: skills
+│   │   ├── Projects.jsx      # Section: projects
+│   │   ├── MusicPlayer.jsx   # Pemutar musik (MP3 lokal, tanpa autoplay)
+│   │   ├── SocialLinks.jsx   # Ikon sosial (Instagram, WhatsApp, X)
+│   ├── hooks/
+│   │   └── useNow.js         # useNow (jam), useToday (kalender), useScrollSpy (menu)
 │   ├── data/
-│   │   └── content.js        # File data statis (teks, daftar project, skills, certs, & playlist musik)
-│   ├── App.jsx               # Wadah utama yang merangkai seluruh section menjadi satu halaman
-│   ├── main.jsx              # Entry point aplikasi React
-│   └── index.css             # Pengaturan Global CSS & Tailwind configuration
-├── index.html                # HTML template utama
-├── package.json              # Daftar dependencies project
-├── tailwind.config.js        # Konfigurasi Tailwind CSS
-└── vite.config.js            # Konfigurasi Vite bundler
+│   │   └── content.js        # Semua teks, foto, skills, project, sosial, playlist
+│   ├── App.jsx               # Layout 3 kolom
+│   ├── main.jsx              # Entry point
+│   └── index.css             # Token warna + seluruh styling (CSS biasa)
+├── index.html
+├── package.json
+├── tailwind.config.js
+└── vite.config.js

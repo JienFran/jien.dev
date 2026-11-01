@@ -2,12 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Design tokens (plan.md §3). Semua warna dirujuk lewat token ini. */
+/* ==========================================================================
+   Token desain
+   Warna, garis, font, dan easing yang dipakai di seluruh stylesheet.
+   ========================================================================== */
 :root {
   --color-bg: #050407;
   --color-surface: #111019;
   --color-surface-raised: #1b1725;
-  --color-indigo: #2a1a63; /* Persian Indigo — nilai sementara, boleh diganti */
+  --color-indigo: #2a1a63;
   --color-purple: #7847f5;
   --color-purple-bright: #a45bff;
   --color-lavender: #b8a0f0;
@@ -15,59 +18,1442 @@
   --color-text: #f3f0fa;
   --color-text-muted: #aaa3b8;
   --color-border: #393044;
+  --color-ink: #120a2e;
+
+  --line: rgba(184, 160, 240, 0.22);
+  --line-strong: rgba(184, 160, 240, 0.5);
+
+  --font-display: "Big Shoulders Display", "Arial Narrow", "Roboto Condensed", sans-serif-condensed, Impact,
+    "DejaVu Sans Condensed", sans-serif;
+  --font-body: "Instrument Sans", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+
+  --pad: clamp(1.25rem, 4vw, 3rem);
+  --rail: 15rem;
+  --glitch: 1.5px 0 rgba(255, 0, 120, 0.3), -1.5px 0 rgba(0, 220, 255, 0.24), 0 0 14px rgba(140, 100, 255, 0.35);
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-@layer base {
+/* Reset dasar */
+html {
+  scroll-behavior: smooth;
+  background: var(--color-bg);
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-lavender-pale);
+  outline-offset: 4px;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+dl,
+dd {
+  margin: 0;
+}
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+/* Teks yang hanya terbaca oleh screen reader */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Tautan "Skip to content" yang muncul saat difokuskan keyboard */
+.skip-link {
+  position: fixed;
+  left: 0.5rem;
+  top: 0.5rem;
+  z-index: 100;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  background: var(--color-purple);
+  color: #fff;
+  font-size: 0.85rem;
+  transform: translateY(-200%);
+}
+.skip-link:focus {
+  transform: none;
+}
+
+/* Kerangka halaman; margin kiri disisihkan untuk menu vertikal di desktop */
+.page {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  padding-bottom: 6rem;
+  overflow-x: clip;
+}
+@media (min-width: 64rem) {
+  .page > main,
+  .page > footer {
+    margin-left: var(--rail);
+  }
+}
+.page > main,
+.page > footer {
+  position: relative;
+}
+
+/* Lebar konten maksimum, rata tengah */
+.wrap {
+  width: min(100% - 2 * var(--pad), 80rem);
+  margin-inline: auto;
+}
+
+/* ==========================================================================
+   Latar halaman
+   Dasar hitam, cahaya violet, dan siluet gedung blur.
+   ========================================================================== */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+.bg__glow {
+  position: absolute;
+  top: -10%;
+  right: -10%;
+  width: 80vmax;
+  height: 80vmax;
+  background: radial-gradient(closest-side, rgba(120, 71, 245, 0.34), rgba(120, 71, 245, 0.1) 55%, transparent 100%);
+}
+.bg__glow::after {
+  content: "";
+  position: absolute;
+  left: -60vmax;
+  bottom: -10vmax;
+  width: 70vmax;
+  height: 70vmax;
+  background: radial-gradient(closest-side, rgba(70, 40, 170, 0.3), transparent 100%);
+}
+.bg__image {
+  position: absolute;
+  inset: -2%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.35;
+  filter: blur(3px) saturate(0.9) brightness(0.7);
+}
+.bg__towers {
+  position: absolute;
+  bottom: -4%;
+  height: 55%;
+  background-image: linear-gradient(90deg, rgba(150, 140, 255, 0.9) 0 58%, transparent 58% 100%);
+  background-size: 17px 100%;
+  filter: blur(1.4px);
+  opacity: 0.5;
+  -webkit-mask-image: repeating-linear-gradient(to bottom, #000 0 4px, transparent 4px 11px),
+    linear-gradient(to top, #000 0, #000 30%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: repeating-linear-gradient(to bottom, #000 0 4px, transparent 4px 11px),
+    linear-gradient(to top, #000 0, #000 30%, transparent 100%);
+  mask-composite: intersect;
+}
+.bg__towers--a {
+  left: 8%;
+  width: 20%;
+}
+.bg__towers--b {
+  left: 72%;
+  width: 14%;
+  height: 46%;
+  opacity: 0.38;
+}
+.bg__towers--c {
+  left: 40%;
+  width: 10%;
+  height: 36%;
+  opacity: 0.3;
+}
+.bg__haze {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(5, 4, 7, 0.25), rgba(5, 4, 7, 0.45) 100%);
+}
+
+/* ==========================================================================
+   Filter CRT
+   .crt--under = tekstur kuat di bawah konten.
+   .crt--over = lapisan tipis di atas konten agar teks tetap terbaca.
+   ========================================================================== */
+.crt {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.crt--under {
+  z-index: 0;
+}
+.crt--over {
+  z-index: 60;
+}
+.crt__layer {
+  position: absolute;
+  inset: 0;
+}
+.crt--under .crt__scan {
+  background: repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0, 0, 0, 0.35) 2px 3px);
+}
+.crt--over .crt__scan {
+  background: repeating-linear-gradient(to bottom, transparent 0 3px, rgba(0, 0, 0, 0.1) 3px 4px);
+}
+.crt__mask {
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 40, 90, 0.05) 0 1px,
+    rgba(40, 255, 130, 0.035) 1px 2px,
+    rgba(70, 90, 255, 0.055) 2px 3px
+  );
+}
+.crt__vignette {
+  background: radial-gradient(ellipse at center, transparent 62%, rgba(0, 0, 0, 0.35) 100%);
+}
+/* Pita cahaya yang bergulir turun */
+.crt__roll {
+  top: -22%;
+  bottom: auto;
+  height: 22%;
+  background: linear-gradient(to bottom, rgba(150, 130, 255, 0), rgba(150, 130, 255, 0.07), rgba(150, 130, 255, 0));
+  animation: crt-roll 9s linear infinite;
+}
+/* Noise halus yang bergeser */
+.crt__grain {
+  inset: -6%;
+  opacity: 0.1;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .72  0 0 0 0 .62  0 0 0 0 1  0 0 0 1.1 -.15'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation: crt-grain 1.2s steps(5) infinite;
+}
+@keyframes crt-roll {
+  to {
+    transform: translateY(600%);
+  }
+}
+@keyframes crt-grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -3%); }
+  60% { transform: translate(-2%, -1%); }
+  80% { transform: translate(3%, 3%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ==========================================================================
+   Tombol
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.9rem;
+  padding: 0 1.5rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font: 600 0.95rem/1 var(--font-body);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.25s var(--ease), background 0.25s, border-color 0.25s;
+}
+.btn--solid {
+  background: var(--color-purple);
+  color: #fff;
+}
+.btn--solid:hover {
+  background: #8a5cff;
+  transform: translateY(-2px);
+}
+.btn--line {
+  border-color: var(--line-strong);
+  color: var(--color-lavender-pale);
+}
+.btn--line:hover {
+  border-color: var(--color-lavender-pale);
+  background: rgba(184, 160, 240, 0.12);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   Navigasi
+   Menu vertikal di kiri (desktop) dan tombol Menu (mobile).
+   ========================================================================== */
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem var(--pad);
+  background: rgba(5, 4, 7, 0.88);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.nav__brand {
+  font: 900 1.5rem/1 var(--font-display);
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-lavender-pale);
+  text-shadow: var(--glitch);
+}
+.nav__toggle {
+  min-height: 2.5rem;
+  padding: 0 1.1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: none;
+  color: var(--color-lavender-pale);
+  font: 600 0.9rem/1 var(--font-body);
+  cursor: pointer;
+}
+.nav__panel {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  padding: 1rem var(--pad) 1.5rem;
+  background: rgba(5, 4, 7, 0.96);
+  border-bottom: 1px solid var(--line);
+}
+.nav__panel.is-open {
+  display: block;
+}
+.nav__cap {
+  margin-bottom: 0.6rem;
+  font: 500 0.8rem/1 var(--font-body);
+  color: var(--color-text-muted);
+}
+.nav__list {
+  display: grid;
+  gap: 0.2rem;
+}
+.nav__link {
+  position: relative;
+  display: block;
+  padding: 0.3rem 0 0.3rem 1.1rem;
+  font: 800 1.6rem/1.1 var(--font-display);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-lavender);
+  text-shadow: var(--glitch);
+  transition: color 0.2s, transform 0.25s var(--ease);
+}
+.nav__link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  background: var(--color-lavender-pale);
+  transform: translateY(-50%);
+  transition: height 0.25s var(--ease);
+}
+.nav__link:hover,
+.nav__link[aria-current] {
+  color: var(--color-lavender-pale);
+}
+.nav__link:hover {
+  transform: translateX(4px);
+}
+.nav__link:hover::before,
+.nav__link[aria-current]::before {
+  height: 1.3rem;
+}
+@media (min-width: 64rem) {
+  .nav {
+    inset: 0 auto 0 0;
+    width: var(--rail);
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: clamp(2rem, 11vh, 6rem);
+    padding: 1.75rem 0 0 var(--pad);
+    background: none;
+    border: 0;
+    backdrop-filter: none;
+  }
+  .nav__toggle {
+    display: none;
+  }
+  .nav__panel {
+    display: block;
+    position: static;
+    padding: 0;
+    background: none;
+    border: 0;
+  }
+  .nav__link {
+    font-size: 1.35rem;
+  }
+}
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+.hero {
+  padding: clamp(6.5rem, 14vh, 9rem) 0 clamp(3.5rem, 8vw, 6rem);
+}
+.hero__grid {
+  display: grid;
+  gap: 3.5rem;
+  align-items: center;
+}
+.hero__text {
+  container-type: inline-size;
+}
+.hero__title {
+  font: 900 clamp(3.5rem, min(13vw, 21cqw), 9.5rem) / 0.86 var(--font-display);
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  color: var(--color-lavender-pale);
+}
+.hero__line {
+  display: block;
+  padding-top: 0.04em;
+  overflow: hidden;
+}
+.hero__line:nth-child(even) {
+  color: var(--color-lavender);
+}
+.hero__line > span {
+  display: block;
+  animation: rise 0.9s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 0.1s + 0.1s);
+}
+@keyframes rise {
+  from {
+    transform: translateY(105%);
+  }
+}
+.hero__role {
+  margin-top: 1.75rem;
+  font: 600 1.15rem/1.3 var(--font-body);
+  color: var(--color-lavender);
+}
+.hero__intro {
+  max-width: 34ch;
+  margin-top: 0.6rem;
+  font-size: 1.15rem;
+  color: var(--color-text-muted);
+}
+.hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+@media (min-width: 70rem) {
+  .hero__grid {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* ==========================================================================
+   Kolase hero
+   Foto tidak pernah miring. Satuan cqw = lebar kolase.
+   ========================================================================== */
+.collage {
+  position: relative;
+  container-type: inline-size;
+  width: min(100%, 38rem);
+  aspect-ratio: 1 / 1.1;
+  margin-inline: auto;
+}
+/* Tiap slot kolase diposisikan absolut di dalam .collage */
+.c {
+  position: absolute;
+  transition: transform 0.45s var(--ease);
+}
+.c:hover,
+.c:focus-within {
+  transform: scale(1.03);
+  z-index: 8;
+}
+.c > .frame {
+  width: 100%;
+  height: 100%;
+}
+/* Posisi (left/top), lebar, dan rasio tiap foto kolase; z-index mengatur tumpukan */
+.c-me { left: 0; top: 0; width: 27cqw; aspect-ratio: 0.78 / 1; z-index: 4; }
+.c-cyberpunk { left: 33cqw; top: 3cqw; width: 38cqw; aspect-ratio: 1.85 / 1; z-index: 1; }
+.c-albums {
+  left: 33cqw;
+  top: 27cqw;
+  width: 38cqw;
+  aspect-ratio: 1 / 1;
+  z-index: 2;
+}
+.c-kimi { left: 77cqw; top: 8cqw; width: 23cqw; aspect-ratio: 0.8 / 1; z-index: 2; }
+.c-art { left: 4cqw; top: 41cqw; width: 24cqw; aspect-ratio: 0.85 / 1; z-index: 3; }
+.c-dvd { left: 38cqw; top: 67cqw; width: 33cqw; aspect-ratio: 1.3 / 1; z-index: 3; }
+.c-misc { left: 0; top: 77cqw; width: 46cqw; aspect-ratio: 1.5 / 1; z-index: 2; }
+.c-clock {
+  left: 74cqw;
+  top: 42cqw;
+  width: 26cqw;
+  aspect-ratio: 1;
+  z-index: 5;
+  padding: 0.35rem;
+  border-radius: 50%;
+  background: rgba(17, 16, 25, 0.72);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+}
+.c-clock:hover {
+  transform: none;
+}
+.c-swatch {
+  left: 77cqw;
+  top: 76cqw;
+  width: 23cqw;
+}
+.c-swatch:hover {
+  transform: none;
+}
+.swatch {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--color-lavender-pale);
+}
+.swatch i {
+  display: block;
+  flex: 1;
+  aspect-ratio: 1.3 / 1;
+}
+
+/* ==========================================================================
+   Foto dan bracket deteksi
+   .frame = bracket sudut + label; .photo = gambar dengan scanline dan tint ungu.
+   ========================================================================== */
+.frame {
+  position: relative;
+  --b: var(--color-lavender-pale);
+  --bl: 14px;
+  --bw: 1.5px;
+}
+.frame::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--b), var(--b)) top left / var(--bl) var(--bw),
+    linear-gradient(var(--b), var(--b)) top left / var(--bw) var(--bl),
+    linear-gradient(var(--b), var(--b)) top right / var(--bl) var(--bw),
+    linear-gradient(var(--b), var(--b)) top right / var(--bw) var(--bl),
+    linear-gradient(var(--b), var(--b)) bottom left / var(--bl) var(--bw),
+    linear-gradient(var(--b), var(--b)) bottom left / var(--bw) var(--bl),
+    linear-gradient(var(--b), var(--b)) bottom right / var(--bl) var(--bw),
+    linear-gradient(var(--b), var(--b)) bottom right / var(--bw) var(--bl);
+  background-repeat: no-repeat;
+  transition: inset 0.3s var(--ease);
+  animation: lock 0.9s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 0.12s + 0.6s);
+}
+.frame:hover::after,
+.frame:focus-within::after {
+  inset: -12px;
+  --bl: 22px;
+}
+@keyframes lock {
+  from {
+    inset: -28px;
+    opacity: 0;
+  }
+}
+.frame__tag {
+  position: absolute;
+  left: -7px;
+  bottom: calc(100% + 12px);
+  z-index: 7;
+  padding: 0.25rem 0.55rem;
+  border-radius: 0.3rem;
+  background: var(--color-lavender-pale);
+  color: var(--color-ink);
+  font: 600 0.72rem/1 var(--font-body);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.2s, transform 0.3s var(--ease);
+  pointer-events: none;
+}
+.frame:hover .frame__tag,
+.frame:focus-within .frame__tag {
+  opacity: 1;
+  transform: none;
+}
+
+.photo {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0a0618;
+  border: 1.5px solid rgba(142, 110, 232, 0.8);
+}
+.photo img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.9) contrast(1.05);
+}
+
+/* Scanline lokal pada gambar */
+.photo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0, 0, 0, 0.28) 2px 3px);
+}
+/* Tint ungu seragam */
+.photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: rgba(110, 80, 220, 0.16);
+  mix-blend-mode: color;
+}
+/* Kotak kosong bergaris saat src belum diisi */
+.photo--empty {
+  background:
+    repeating-linear-gradient(0deg, rgba(184, 160, 240, 0.07) 0 1px, transparent 1px 14px),
+    repeating-linear-gradient(90deg, rgba(184, 160, 240, 0.07) 0 1px, transparent 1px 14px),
+    linear-gradient(155deg, #2a1a63 0%, #0e0828 60%, #3a2392 100%);
+}
+.photo__label {
+  position: absolute;
+  left: 0.6rem;
+  bottom: 0.5rem;
+  z-index: 2;
+  font: 500 0.7rem/1 var(--font-body);
+  color: rgba(225, 216, 255, 0.85);
+}
+.photo--sm .photo__label {
+  display: none;
+}
+
+/* ==========================================================================
+   Section umum
+   ========================================================================== */
+.sec {
+  padding-block: clamp(4rem, 9vw, 7.5rem);
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 4rem;
+}
+.sec__head {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+.sec__title {
+  font: 900 clamp(2.5rem, 6.5vw, 6rem) / 0.95 var(--font-display);
+  overflow-wrap: anywhere;
+  text-transform: lowercase;
+  color: var(--color-lavender);
+  text-shadow: var(--glitch);
+}
+/* Ukuran ikon dari --icon-size dan --icon-aspect (diisi oleh Section.jsx) */
+.sec__icon {
+  flex: none;
+  width: var(--icon-size, 3.5rem);
+  max-width: 40vw;
+  height: auto;
+  aspect-ratio: var(--icon-aspect, 1);
+}
+/* Kartu kaca gelap untuk isi section */
+.panel {
+  padding: clamp(1.25rem, 3vw, 2.25rem);
+  background: rgba(52, 30, 112, 0.34);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* About */
+.about {
+  display: grid;
+  gap: 3rem;
+}
+.lede {
+  font: 500 clamp(1.3rem, 2.3vw, 2.0rem) / 1.25 var(--font-body);
+  color: var(--color-lavender-pale);
+  text-wrap: pretty;
+}
+.about__more {
+  max-width: 62ch;
+  margin-top: 1.5rem;
+  color: var(--color-text-muted);
+}
+.about__more p + p {
+  margin-top: 0.9rem;
+}
+.about__meta {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.75rem;
+  margin-top: 2.5rem;
+}
+.about__portrait {
+  flex: none;
+  width: 6.5rem;
+  aspect-ratio: 0.85 / 1;
+}
+.meta {
+  display: grid;
+  gap: 0.9rem;
+  min-width: 0;
+}
+.meta dt {
+  font: 500 0.8rem/1.2 var(--font-body);
+  color: var(--color-lavender);
+}
+.meta dd {
+  margin-top: 0.15rem;
+  color: var(--color-text);
+}
+.about__aside {
+  width: min(100%, 21rem);
+}
+@media (min-width: 70rem) {
+  .about {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 4rem;
+  }
+  .about__aside {
+    justify-self: end;
+  }
+}
+
+/* Skills */
+.skillrows > li {
+  display: grid;
+  gap: 1rem 3rem;
+  align-items: center;
+  padding-block: 0.6rem 1.4rem;
+  border-bottom: 1px solid var(--line);
+}
+.skillrows > li:first-child {
+  border-top: 1px solid var(--line);
+}
+.skillrows h3 {
+  font: 900 clamp(3.25rem, 9vw, 7.5rem) / 0.95 var(--font-display);
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--color-lavender);
+  transition: color 0.35s var(--ease), -webkit-text-stroke-color 0.35s;
+}
+.skillrows > li:hover h3,
+.skillrows > li:focus-within h3 {
+  color: var(--color-lavender-pale);
+  -webkit-text-stroke-color: var(--color-lavender-pale);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(52, 30, 112, 0.34);
+  color: var(--color-lavender-pale);
+  font: 500 1rem/1.2 var(--font-body);
+}
+.chip--logo {
+  padding-left: 0.55rem;
+}
+/* Logo kecil di chip skill dan judul accomplishments */
+.logo {
+  flex: none;
+  width: 1.4rem;
+  height: 1.4rem;
+  object-fit: contain;
+}
+.logo--lg {
+  width: var(--logo-size, 2.25rem);
+  height: var(--logo-size, 2.25rem);
+}
+@media (min-width: 70rem) {
+  .skillrows > li {
+    grid-template-columns: auto minmax(0, 1fr);
+    justify-content: space-between;
+  }
+  .skillrows .chips {
+    justify-content: flex-end;
+    max-width: 30rem;
+    justify-self: end;
+  }
+}
+
+/* Projects */
+.projects {
+  display: grid;
+  gap: clamp(3.5rem, 8vw, 6rem);
+}
+.project {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+}
+.project__media {
+  aspect-ratio: 16 / 10;
+}
+.project__title {
+  font: 800 clamp(2.2rem, 4vw, 3.5rem) / 0.95 var(--font-display);
+  text-transform: uppercase;
+  color: var(--color-lavender-pale);
+}
+.project__status {
+  margin-left: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font: 500 0.75rem/1 var(--font-body);
+  vertical-align: middle;
+  color: var(--color-lavender);
+}
+.project__text {
+  max-width: 46ch;
+  margin-top: 1rem;
+  color: var(--color-text-muted);
+}
+.project__role {
+  margin-top: 0.5rem;
+  color: var(--color-text);
+}
+.project__role span {
+  color: var(--color-lavender);
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 1.25rem;
+}
+.tag {
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: var(--color-lavender-pale);
+}
+.project__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+@media (min-width: 70rem) {
+  .project {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 4rem;
+  }
+  .project:nth-child(even) .project__media {
+    order: 2;
+  }
+  .project:nth-child(even) {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+}
+
+/* Accomplishments */
+.awards {
+  display: grid;
+  gap: 1.25rem;
+}
+.award {
+  display: grid;
+  gap: 0.35rem 1.5rem;
+}
+.award__year {
+  font: 800 1.5rem/1.2 var(--font-display);
+  color: var(--color-lavender);
+  text-shadow: var(--glitch);
+}
+.award__title {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font: 500 1.35rem/1.3 var(--font-body);
+  color: var(--color-lavender-pale);
+}
+.award__title a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.award__issuer {
+  margin-top: 0.2rem;
+  color: var(--color-text-muted);
+}
+/* Paragraf deskripsi capaian */
+.award__desc {
+  max-width: 65ch;
+  margin-top: 0.9rem;
+  line-height: 1.65;
+  color: var(--color-text-muted);
+}
+/* Deretan tombol tautan; membungkus ke baris baru jika sempit */
+.award__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.1rem;
+}
+/* Gambar capaian: lebar dari --shot-size dan rasio dari --shot-aspect (diisi oleh Certifications.jsx) */
+.award__imgs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1.1rem;
+  margin-top: 1rem;
+}
+.award__imgs > li {
+  width: var(--shot-size, 9.5rem);
+  max-width: 100%;
+}
+.award__img {
+  aspect-ratio: var(--shot-aspect, 4 / 3);
+}
+.award__shot {
+  display: block;
+}
+
+/* backdrop-filter membuat stacking context yang mengurung foto di bawah CRT, jadi dimatikan di sini */
+.award.panel {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgba(40, 22, 92, 0.5);
+}
+/* Logo penyelenggara di atas filter CRT */
+.award__title .logo {
+  position: relative;
+  z-index: 61;
+}
+@media (min-width: 48rem) {
+  .award {
+    grid-template-columns: 6rem minmax(0, 1fr);
+  }
+  .award__imgs {
+    grid-column: 2;
+  }
+}
+
+/* ==========================================================================
+   Contact
+   ========================================================================== */
+.contact {
+  padding-block: clamp(4rem, 9vw, 7.5rem) 2.5rem;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 4rem;
+}
+.contact__title {
+  font: 900 clamp(4rem, 15vw, 13rem) / 0.9 var(--font-display);
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--color-lavender);
+  transition: color 0.4s var(--ease), -webkit-text-stroke-color 0.4s;
+}
+.contact__title:hover {
+  color: var(--color-lavender-pale);
+  -webkit-text-stroke-color: var(--color-lavender-pale);
+}
+.contact__lead {
+  max-width: 40ch;
+  margin-top: 1.5rem;
+  font-size: 1.15rem;
+  color: var(--color-text-muted);
+}
+/* Tombol sosial di section Contact */
+.social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+.social__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.9rem;
+  padding: 0 1.25rem 0 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--color-lavender-pale);
+  font: 600 0.95rem/1 var(--font-body);
+  text-decoration: none;
+  transition: transform 0.25s var(--ease), background 0.25s, border-color 0.25s;
+}
+/* Ikon sosial: SVG bawaan atau logo dari file sendiri (field `logo` di content.js) */
+.social__item svg,
+.social__logo {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.social__logo {
+  object-fit: contain;
+}
+a.social__item:hover {
+  border-color: var(--color-lavender-pale);
+  background: rgba(184, 160, 240, 0.12);
+  transform: translateY(-2px);
+}
+.social__item.is-disabled {
+  opacity: 0.55;
+  border-style: dashed;
+}
+.contact__base {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: clamp(3rem, 7vw, 5rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+.contact__base a {
+  color: var(--color-lavender);
+  text-underline-offset: 4px;
+}
+.barcode {
+  display: block;
+  width: 11rem;
+  height: 2.6rem;
+  fill: var(--color-purple);
+  opacity: 0.8;
+}
+
+/* ==========================================================================
+   Kalender
+   ========================================================================== */
+.cal {
+  width: 100%;
+  padding: 1rem 1rem 0.75rem;
+  border: 1px solid var(--line);
+  background: rgba(17, 16, 25, 0.7);
+  backdrop-filter: blur(8px);
+}
+.cal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+.cal__title {
+  flex: 1;
+  font: 800 1.5rem/1 var(--font-display);
+  letter-spacing: 0.03em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--color-lavender-pale);
+}
+.cal__nav {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--color-lavender);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.cal__nav:hover {
+  color: #fff;
+  background: rgba(120, 71, 245, 0.35);
+}
+.cal__table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 5px;
+  table-layout: fixed;
+}
+.cal__table th {
+  padding: 0.35rem 0 0.1rem;
+  font: 600 0.72rem/1 var(--font-body);
+  color: var(--color-lavender);
+}
+.cal__table td {
+  padding: 0;
+}
+.cal__num {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  background: rgba(120, 71, 245, 0.2);
+  color: var(--color-lavender-pale);
+  font: 500 0.78rem/1 var(--font-body);
+  font-variant-numeric: tabular-nums;
+}
+.cal__num--out {
+  background: rgba(120, 71, 245, 0.06);
+}
+.cal__num--today {
+  background: var(--color-lavender-pale);
+  color: var(--color-ink);
+  font-weight: 700;
+}
+.cal__reset {
+  display: block;
+  margin: 0.3rem auto 0;
+  padding: 0.3rem 0.5rem;
+  border: 0;
+  background: none;
+  color: var(--color-lavender);
+  font-size: 0.8rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* Jam analog */
+.clock {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.clock__face {
+  fill: none;
+  stroke: var(--color-lavender-pale);
+  stroke-width: 3;
+}
+.clock__tick {
+  stroke: var(--color-lavender-pale);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  opacity: 0.45;
+}
+.clock__hand {
+  stroke-linecap: round;
+}
+.clock__hand--hour {
+  stroke: var(--color-lavender-pale);
+  stroke-width: 4;
+}
+.clock__hand--minute {
+  stroke: var(--color-lavender-pale);
+  stroke-width: 3.4;
+}
+.clock__hand--second {
+  stroke: var(--color-purple-bright);
+  stroke-width: 1.6;
+}
+.clock__pin {
+  fill: var(--color-lavender-pale);
+}
+
+/* ==========================================================================
+   Pemutar musik
+   Dock melayang di bawah-tengah layar.
+   ========================================================================== */
+.player {
+  position: fixed;
+  left: 50%;
+  bottom: 0.9rem;
+  z-index: 80;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    "cover top"
+    "cover bar";
+  align-items: center;
+  gap: 0.15rem 0.85rem;
+  width: min(100% - 1.5rem, 25rem);
+  padding: 0.55rem 0.9rem 0.55rem 0.55rem;
+  border: 1px solid var(--line-strong);
+  background: rgba(17, 16, 25, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transform: translateX(-50%);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+.player__cover {
+  grid-area: cover;
+  position: relative;
+  display: block;
+  width: 3.1rem;
+  height: 3.1rem;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: none;
+  cursor: pointer;
+}
+.player__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* z-index tinggi agar ikon tidak tertutup gambar cover (gambar memakai z-index sendiri di dalam PhotoSlot) */
+.player__glyph {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  background: rgba(5, 3, 15, 0.45);
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.2s var(--ease);
+}
+/* Jeda: ikon play selalu terlihat */
+.player:not(.is-playing) .player__glyph {
+  opacity: 1;
+}
+/* Memutar: ikon pause hanya muncul saat hover atau fokus keyboard */
+.player.is-playing .player__cover:hover .player__glyph,
+.player.is-playing .player__cover:focus-visible .player__glyph {
+  opacity: 1;
+}
+.player__cover:disabled {
+  cursor: not-allowed;
+}
+.player__cover:disabled .player__glyph {
+  opacity: 0.55;
+}
+.player__top {
+  grid-area: top;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+}
+.player__title {
+  min-width: 0;
+  overflow: hidden;
+  font: 500 0.9rem/1.3 var(--font-body);
+  color: var(--color-lavender-pale);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.player__hint {
+  flex: none;
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+}
+.player__skip {
+  display: flex;
+  gap: 0.2rem;
+  margin-left: auto;
+}
+.player__skip button {
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-lavender);
+  cursor: pointer;
+}
+.player__skip button:hover {
+  color: #fff;
+}
+.wave {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+  height: 0.9rem;
+}
+.wave i {
+  display: block;
+  width: 2px;
+  height: 100%;
+  background: var(--color-lavender);
+  transform: scaleY(var(--h, 0.5));
+}
+.wave i:nth-child(1) { --h: 0.3; --d: 0s; }
+.wave i:nth-child(2) { --h: 0.55; --d: 0.15s; }
+.wave i:nth-child(3) { --h: 0.9; --d: 0.3s; }
+.wave i:nth-child(4) { --h: 0.5; --d: 0.05s; }
+.wave i:nth-child(5) { --h: 1; --d: 0.4s; }
+.wave i:nth-child(6) { --h: 0.6; --d: 0.2s; }
+.wave i:nth-child(7) { --h: 0.8; --d: 0.1s; }
+.wave i:nth-child(8) { --h: 0.4; --d: 0.35s; }
+.wave i:nth-child(9) { --h: 0.25; --d: 0.25s; }
+.is-playing .wave i {
+  animation: wave 0.8s ease-in-out infinite alternate;
+  animation-delay: var(--d);
+}
+@keyframes wave {
+  from { transform: scaleY(0.2); }
+  to { transform: scaleY(1); }
+}
+.player__bar {
+  grid-area: bar;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.player__time {
+  flex: none;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+.player__seek {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 1rem;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.player__seek::-webkit-slider-runnable-track {
+  height: 1px;
+  background: var(--line-strong);
+}
+.player__seek::-webkit-slider-thumb {
+  width: 9px;
+  height: 9px;
+  margin-top: -4px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-lavender-pale);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.player__seek::-moz-range-track {
+  height: 1px;
+  background: var(--line-strong);
+}
+.player__seek::-moz-range-thumb {
+  width: 9px;
+  height: 9px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-lavender-pale);
+}
+.player__seek:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+@media (max-width: 30rem) {
+  .player__hint {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Gerak dikurangi
+   Mematikan animasi dan transisi bagi pengguna yang memilih reduced motion.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
   }
-
-  body {
-    @apply bg-bg text-text antialiased;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  .crt__roll,
+  .crt__grain,
+  .wave i,
+  .hero__line > span,
+  .frame::after {
+    animation: none !important;
   }
-
-  /* Fokus keyboard yang selalu terlihat (plan.md §9) */
-  :focus-visible {
-    outline: 2px solid var(--color-purple-bright);
-    outline-offset: 3px;
-  }
-
-  /* Hormati preferensi reduced-motion (plan.md §7) */
-  @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
   }
 }
 
-@layer components {
-  /* Placeholder visual dasar; styling lengkap menyusul di fase tampilan */
-  .panel {
-    @apply rounded border border-border bg-surface p-4;
-  }
+.c > .frame,
+.project__media,
+.about__portrait {
+  width: 100%;
+  height: auto;
+}
+.c > .frame {
+  height: 100%;
+}
+/* Pembungkus foto mengisi kotak induk; rasio diatur oleh induknya */
+.photo-wrap {
+  display: block;
+}
+.project__media,
+.about__portrait {
+  display: block;
+}
+.about__portrait {
+  width: 6.5rem;
+}
 
-  .label {
-    @apply text-xs uppercase tracking-widest text-lavender-pale;
-  }
-
-  .section {
-    @apply mx-auto w-full max-w-5xl px-4 py-16 sm:px-6;
-    scroll-margin-top: 4rem;
-  }
-
-  .section-title {
-    @apply mb-6 text-2xl font-bold uppercase tracking-wide text-lavender;
-  }
-
-  .skip-link {
-    @apply absolute left-2 top-2 z-50 -translate-y-16 rounded bg-purple px-3 py-2 text-sm text-text focus:translate-y-0;
-  }
+/* ==========================================================================
+   Foto di atas filter CRT
+   .crt--over memakai z-index 60; foto memakai 61. Nav dan pemutar musik (80) tetap di atasnya.
+   Syarat: tidak ada leluhur foto yang membuat stacking context (mis. backdrop-filter).
+   ========================================================================== */
+.above-crt {
+  position: relative;
+  z-index: 61;
+}
+.above-crt .photo::before,
+.above-crt .photo::after {
+  display: none;
+}
+.above-crt .photo img {
+  filter: none;
+}
+/* Dimatikan agar foto potret bisa tampil di atas CRT */
+.about .panel {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgba(40, 22, 92, 0.5);
+}
+.meta__info {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
 }

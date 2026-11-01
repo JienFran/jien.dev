@@ -1,19 +1,27 @@
-import Navbar from "./components/Navbar.jsx";
+import Background from "./components/Background.jsx";
+import CrtOverlay from "./components/CrtOverlay.jsx";
+import Nav from "./components/Nav.jsx";
 import Hero from "./components/Hero.jsx";
 import About from "./components/About.jsx";
 import Skills from "./components/Skills.jsx";
 import Projects from "./components/Projects.jsx";
 import Certifications from "./components/Certifications.jsx";
+import Contact from "./components/Contact.jsx";
 import MusicPlayer from "./components/MusicPlayer.jsx";
-import Footer from "./components/Footer.jsx";
 
+// Susunan halaman tunggal: hero → about → skills → projects → accomplishments → contact.
+// Background dan CrtOverlay adalah lapisan dekoratif; MusicPlayer melayang di bawah layar.
 export default function App() {
   return (
-    <>
+    <div className="page">
       <a href="#main" className="skip-link">
-        Lewati ke konten
+        Skip to content
       </a>
-      <Navbar />
+
+      <Background />
+      <CrtOverlay />
+      <Nav />
+
       <main id="main">
         <Hero />
         <About />
@@ -21,8 +29,9 @@ export default function App() {
         <Projects />
         <Certifications />
       </main>
-      <Footer />
+
+      <Contact />
       <MusicPlayer />
-    </>
+    </div>
   );
 }
