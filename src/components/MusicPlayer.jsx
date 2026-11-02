@@ -5,6 +5,9 @@ import PhotoSlot from "./PhotoSlot.jsx";
 // Jumlah batang animasi gelombang saat lagu diputar
 const WAVE_BARS = 9;
 
+// Volume awal pemutar (0.0 – 1.0)
+const DEFAULT_VOLUME = 0.3;
+
 // Detik → "m:ss"
 const formatTime = (seconds) => {
   if (!Number.isFinite(seconds)) return "0:00";
@@ -39,6 +42,7 @@ export default function MusicPlayer() {
   useEffect(() => {
     const audio = audioRef.current;
     if (audio && hasAudio) {
+      audio.volume = DEFAULT_VOLUME; // set volume sebelum play()
       audio.play()
         .then(() => setPlaying(true))
         .catch(() => setPlaying(false));
@@ -79,11 +83,11 @@ export default function MusicPlayer() {
           ref={audioRef}
           src={track.src}
           preload="auto"
-          volume={0.5}
           onPlay={() => setPlaying(true)}
           onPause={() => setPlaying(false)}
           onTimeUpdate={(e) => setTime(e.currentTarget.currentTime)}
           onLoadedMetadata={(e) => {
+            e.currentTarget.volume = DEFAULT_VOLUME;
             setDuration(e.currentTarget.duration);
             e.currentTarget.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
           }}
